@@ -35,35 +35,42 @@ enum planck_keycodes {
 // Adding macros to make the keymaps below much easier to read.
 #define GRVLCTL LCTL_T(KC_GRV)
 #define QUOTRCTL RCTL_T(KC_QUOT)
-#define TABLGUI
-#define MINSRGUI
-#define SPCLSFT
-#define DELRSFT
+#define TABLGUI LGUI_T(KC_TAB)
+#define MINSRGUI RGUI_T(KC_MINS)
+#define SPCLSFT LSFT_T(KC_SPC)
+#define DELRSFT RSFT_T(KC_BSPC)
 #define ZALT ALT_T(KC_Z)
-#define SLSHALT 
-#define 
-#define
+#define SLSHALT ALT_T(KC_SLSH)
+#define XRALT RALT_T(KC_X)
+#define DOTRALT RALT_T(KC_DOT)
+#define LPAREN LSFT_T(LSFT(KC_9))
+#define RPAREN RSFT_T(RSFT(KC_0))
+#define BSLSLSIFT LSFT(KC_BSLS)
+#define LOWER OSL(_LOWER)
+#define RAISE OSL(_RAISE)
+#define ZCTRL LCTL(KC_Z)
+#define XCTRL LCTL(KC_X)
+#define CCTRL LCTL(KC_C)
+#define VCTRL LCTL(KC_V)
+
 #define DELGUI GUI_T(KC_DEL)
 #define ALTENT ALT_T(KC_ENT)
 #define SCLNCTL CTL_T(KC_SCLN)
 #define QUEALT ALT_T(KC_Q)
 #define VEEALT ALT_T(KC_V)
 #define ZEDCTL CTL_T(KC_Z)
-#define ADJUST MO(_ADJUST)
-#define LOWER MO(_LOWER)
-#define RAISE MO(_RAISE)
 #define MACLOCK LGUI(LCTL(KC_Q))
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_DVORAK] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_LBRC, KC_Q,   KC_W,     KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,   KC_RBRC,
+     KC_LBRC,  KC_Q,     KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,   KC_RBRC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    LCTL_T(KC_GRV),    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L,    KC_S, RCTL_T(KC_QUOT),
+     GRVLCTL,   KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L,    KC_S,  QUOTRCTL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    LSFT_T(), SCLNCTL,  QUEALT,    KC_J,    KC_K,    KC_X,                         KC_N,  KC_M,  KC_COMMA, KC_DOT,  KC_SLSH, RSFT_T(),
+     LPAREN,   ZALT,   XRALT,   KC_C,    KC_V,    KC_B,                         KC_N,    KC_M,   KC_COMMA, DOTRALT, SLSHALT, RPAREN,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_TAB, LOWER,   KC_SPC,     KC_BSPC,  KC_ENT,  KC_MINS
+                                         TABLGUI,   LOWER, SPCLSFT,     DELRSFT,  RAISE, MINSRGUI
                                       //`--------------------------'  `--------------------------'
 
   ),
@@ -72,23 +79,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_GRV, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSLS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX,   KC_UP, XXXXXXX, KC_HOME,                      KC_PGUP, XXXXXXX, KC_PLUS, KC_LCBR, KC_RCBR, XXXXXXX,
+      XXXXXXX, XXXXXXX, XXXXXXX,   KC_UP, XXXXXXX, KC_HOME,                     KC_LEFT, KC_DOWN,  KC_UP,  KC_RIGHT, KC_RCBR, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT,  KC_END,                      KC_PGDN, KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX,
+      KC_CAPS, ZCTRL,   XCTRL,   CCTRL,   VCTRL,   KC_END,                      KC_PGDN, KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          _______,  KC_DEL, MACLOCK,    _______,  KC_INS, _______
+                                          _______,  KC_DEL, MACLOCK,    _______,  KC_DEL, _______
                                       //`--------------------------'  `--------------------------'
   ),
 
   [_RAISE] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_TILD,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, KC_PIPE,
+    BSLSLSIFT,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_BSLS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX,   KC_UP, XXXXXXX, KC_HOME,                      KC_PGUP, XXXXXXX,  KC_EQL, KC_LBRC, KC_RBRC, XXXXXXX,
+     KC_MINS,  KC_1,    KC_2,    KC_3,     KC_4,    KC_5,                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,   KC_EQL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RGHT,  KC_END,                      KC_PGDN, KC_MPRV, KC_MPLY, KC_MNXT, XXXXXXX, XXXXXXX,
+      KC_F12, KC_F1,   KC_F2,   KC_F3,    KC_F4,   KC_F5,                        KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          _______,  KC_DEL, MACLOCK,    _______,  KC_INS, _______
+                                          TABLGUI,  KC_DEL, SPCLSFT,    DELRSFT, _______, MINSRGUI
                                       //`--------------------------'  `--------------------------'
   ),
 
