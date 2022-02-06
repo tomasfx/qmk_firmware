@@ -56,7 +56,6 @@ enum planck_keycodes {
 #define XCTRL LCTL(KC_X)
 #define CCTRL LCTL(KC_C)
 #define VCTRL LCTL(KC_V)
-#define BCTRL LCTL(KC_B)
 #define ACTRL LCTL(KC_A)
 #define SCTRL LCTL(KC_S)
 #define DCTRL LCTL(KC_D)
@@ -107,11 +106,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_LOWER] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX,  FLGUI,   SLGUI,  THLGUI,  FOLGUI,  FVLGUI,                       SXLGUI,  SVLGUI,  ELGUI,   NLGUI,  XXXXXXX, KC_PSCR,
+      KC_BRID,  FLGUI,   SLGUI,  THLGUI,  FOLGUI,  FVLGUI,                       SXLGUI,  SVLGUI,  ELGUI,   NLGUI,  KC_PSCR,  KC_BRIU,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      CG_TOGG, ACTRL,   SCTRL,   DCTRL,   FCTRL,   GCTRL,                        KC_LEFT, KC_DOWN,  KC_UP,  KC_RIGHT, KC_HOME, KC_END,
+      CG_TOGG, ACTRL,   SCTRL,   DCTRL,   FCTRL,   GCTRL,                        KC_LEFT, KC_DOWN,  KC_UP, KC_RIGHT, KC_HOME, KC_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_CAPS, ZCTRL,   XCTRL,   CCTRL,   VCTRL,   BCTRL,                       KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_VOLD, KC_VOLU,
+      KC_CAPS, ZCTRL,   XCTRL,   CCTRL,   VCTRL,   KC_APP,                       KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_VOLD, KC_VOLU,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                          TABLGUI, KC_TRNS, SPCLSFT,    DELRSFT,  KC_DEL, MINSRGUI
                                       //`--------------------------'  `--------------------------'
@@ -132,13 +131,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #ifdef OLED_DRIVER_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_270; }
-
-// When add source files to SRC in rules.mk, you can use functions.
-const char *read_layer_state(void);
-const char *read_logo(void);
-void set_keylog(uint16_t keycode, keyrecord_t *record);
-const char *read_keylog(void);
-const char *read_keylogs(void);
 
 void render_space(void) {
     oled_write_P(PSTR("     "), false);
