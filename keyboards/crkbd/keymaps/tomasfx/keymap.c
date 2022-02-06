@@ -18,6 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
+extern keymap_config_t keymap_config;
+
+#ifdef OLED_DRIVER_ENABLE
+static uint32_t oled_timer = 0;
+#endif
+
+extern uint8_t is_master;
+
 enum layer_names {
   _QWERTY,
   _LOWER,
@@ -41,15 +49,19 @@ enum planck_keycodes {
 #define SLSHALT ALT_T(KC_SLSH)
 #define XRALT RALT_T(KC_X)
 #define DOTRALT RALT_T(KC_DOT)
-#define LPAREN LSFT_T(LSFT(KC_9))
-#define RPAREN RSFT_T(RSFT(KC_0))
 #define BSLSLSIFT LSFT(KC_BSLS)
-#define LOWER OSL(_LOWER)
-#define RAISE OSL(_RAISE)
+#define LOWER LT(_LOWER, KC_ESC)
+#define RAISE LT(_RAISE, KC_ENT)
 #define ZCTRL LCTL(KC_Z)
 #define XCTRL LCTL(KC_X)
 #define CCTRL LCTL(KC_C)
 #define VCTRL LCTL(KC_V)
+#define BCTRL LCTL(KC_B)
+#define ACTRL LCTL(KC_A)
+#define SCTRL LCTL(KC_S)
+#define DCTRL LCTL(KC_D)
+#define FCTRL LCTL(KC_F)
+#define GCTRL LCTL(KC_G)
 #define FLGUI LGUI_T(KC_1)
 #define SLGUI LGUI_T(KC_2)
 #define THLGUI LGUI_T(KC_3)
@@ -59,15 +71,25 @@ enum planck_keycodes {
 #define SVLGUI LGUI_T(KC_7)
 #define ELGUI LGUI_T(KC_8)
 #define NLGUI LGUI_T(KC_9)
-#define TLGUI LGUI_T(KC_10)
-
-#define DELGUI GUI_T(KC_DEL)
-#define ALTENT ALT_T(KC_ENT)
-#define SCLNCTL CTL_T(KC_SCLN)
-#define QUEALT ALT_T(KC_Q)
-#define VEEALT ALT_T(KC_V)
-#define ZEDCTL CTL_T(KC_Z)
-#define MACLOCK LGUI(LCTL(KC_Q))
+#define FLGUI LGUI_T(KC_1)
+#define SLGUI LGUI_T(KC_2)
+#define THLGUI LGUI_T(KC_3)
+#define FOLGUI LGUI_T(KC_4)
+#define FVLGUI LGUI_T(KC_5)
+#define SXLGUI LGUI_T(KC_6)
+#define SVLGUI LGUI_T(KC_7)
+#define ELGUI LGUI_T(KC_8)
+#define NLGUI LGUI_T(KC_9)
+#define FLSFT LSFT(KC_1)
+#define SLSFT LSFT(KC_2)
+#define THSFT LSFT(KC_3)
+#define FOSFT LSFT(KC_4)
+#define FVSFT LSFT(KC_5)
+#define SXSFT LSFT(KC_6)
+#define SVSFT LSFT(KC_7)
+#define ESFT LSFT(KC_8)
+#define NSFT LSFT(KC_9)
+#define CSFT LSFT(KC_0)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_QWERTY] = LAYOUT_split_3x6_3(
@@ -76,7 +98,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      GRVLCTL,   KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L,    KC_S,  QUOTRCTL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     LPAREN,   ZALT,    XRALT,   KC_C,    KC_V,    KC_B,                         KC_N,    KC_M,   KC_COMMA, DOTRALT, SLSHALT, RPAREN,
+     KC_LSPO,   ZALT,    XRALT,   KC_C,    KC_V,    KC_B,                         KC_N,    KC_M,  KC_COMMA, DOTRALT, SLSHALT, KC_RSPC,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                          TABLGUI,   LOWER, SPCLSFT,     DELRSFT,  RAISE, MINSRGUI
                                       //`--------------------------'  `--------------------------'
@@ -85,35 +107,38 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_LOWER] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      GUI_TOG,  FLGUI,   SLGUI,  THLGUI,  FOLGUI,  FVLGUI,                       SXLGUI,  SVLGUI,  ELGUI,   NLGUI,  TLGUI,   KC_PSCR,
+      XXXXXXX,  FLGUI,   SLGUI,  THLGUI,  FOLGUI,  FVLGUI,                       SXLGUI,  SVLGUI,  ELGUI,   NLGUI,  XXXXXXX, KC_PSCR,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      CG_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                     KC_LEFT, KC_DOWN,  KC_UP,  KC_RIGHT, KC_HOME, KC_END,
+      CG_TOGG, ACTRL,   SCTRL,   DCTRL,   FCTRL,   GCTRL,                        KC_LEFT, KC_DOWN,  KC_UP,  KC_RIGHT, KC_HOME, KC_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_CAPS, ZCTRL,   XCTRL,   CCTRL,   VCTRL,   XXXXXXX,                      KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_VOLD, KC_VOLU,
+      KC_CAPS, ZCTRL,   XCTRL,   CCTRL,   VCTRL,   BCTRL,                       KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_VOLD, KC_VOLU,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                         TABLGUI, _______, SPCLSFT,    DELRSFT,  KC_DEL, MINSRGUI
+                                         TABLGUI, KC_TRNS, SPCLSFT,    DELRSFT,  KC_DEL, MINSRGUI
                                       //`--------------------------'  `--------------------------'
   ),
 
   [_RAISE] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-    BSLSLSIFT,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_BSLS,
+    BSLSLSIFT,  FLSFT,  SLSFT,   THSFT,   FOSFT,    FVSFT,                       SXSFT,    SVSFT,   ESFT,    NSFT,    CSFT,  KC_BSLS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      KC_MINS,  KC_1,    KC_2,    KC_3,     KC_4,    KC_5,                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,   KC_EQL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_F12, KC_F1,   KC_F2,   KC_F3,    KC_F4,   KC_F5,                        KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          TABLGUI,  KC_DEL, SPCLSFT,    DELRSFT, _______, MINSRGUI
+                                          TABLGUI,  KC_DEL, SPCLSFT,    DELRSFT, KC_TRNS, MINSRGUI
                                       //`--------------------------'  `--------------------------'
   )
 };
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-  return update_tri_layer_state(state, _LOWER, _RAISE);
-}
-
 #ifdef OLED_DRIVER_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_270; }
+
+// When add source files to SRC in rules.mk, you can use functions.
+const char *read_layer_state(void);
+const char *read_logo(void);
+void set_keylog(uint16_t keycode, keyrecord_t *record);
+const char *read_keylog(void);
+const char *read_keylogs(void);
 
 void render_space(void) {
     oled_write_P(PSTR("     "), false);
@@ -273,13 +298,7 @@ void render_layer_state(void) {
         0x20, 0x9a, 0x9b, 0x9c, 0x20,
         0x20, 0xba, 0xbb, 0xbc, 0x20,
         0x20, 0xda, 0xdb, 0xdc, 0x20, 0};
-    static const char PROGMEM adjust_layer[] = {
-        0x20, 0x9d, 0x9e, 0x9f, 0x20,
-        0x20, 0xbd, 0xbe, 0xbf, 0x20,
-        0x20, 0xdd, 0xde, 0xdf, 0x20, 0};
-    if(layer_state_is(_ADJUST)) {
-        oled_write_P(adjust_layer, false);
-    } else if(layer_state_is(_LOWER)) {
+    if(layer_state_is(_LOWER)) {
         oled_write_P(lower_layer, false);
     } else if(layer_state_is(_RAISE)) {
         oled_write_P(raise_layer, false);
@@ -307,7 +326,7 @@ void render_status_secondary(void) {
 }
 
 void oled_task_user(void) {
-    if (timer_elapsed32(oled_timer) > 30000) {
+    if (timer_elapsed32(oled_timer) > 300000) {
         oled_off();
         return;
     }
@@ -329,28 +348,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         oled_timer = timer_read32();
 #endif
     // set_timelog();
-  }
-  static uint16_t my_colon_timer;
-
-  switch (keycode) {
-    case LOWER:
-      if (record->event.pressed) {
-        layer_on(_LOWER);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
-      } else {
-        layer_off(_LOWER);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
-      }
-      return false;
-    case RAISE:
-      if (record->event.pressed) {
-        layer_on(_RAISE);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
-      } else {
-        layer_off(_RAISE);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
-      }
-      return false;
   }
   return true;
 }
